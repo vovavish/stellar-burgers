@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import uniqid from 'uniqid';
 
-import { TConstructorIngredient, TIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 
 import { getIngredientsApi } from '@api';
 
@@ -13,6 +13,7 @@ export const getIngredientsThunk = createAsyncThunk(
 
 export interface IConstructorItems {
   bun: {
+    _id: string;
     price: number;
     name: string;
     image: string;
@@ -60,6 +61,12 @@ export const ingredientsSlice = createSlice({
           { ...payload, id: uniqid('id_') }
         ];
       }
+    },
+    resetIngredients: (state) => {
+      state.constructorItems = {
+        bun: null,
+        ingredients: []
+      };
     }
   },
   selectors: {
@@ -82,7 +89,7 @@ export const ingredientsSlice = createSlice({
   }
 });
 
-export const { setIngredientById, addIngridientInOrder } =
+export const { setIngredientById, addIngridientInOrder, resetIngredients } =
   ingredientsSlice.actions;
 
 export const {

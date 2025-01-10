@@ -1,15 +1,41 @@
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  getFeedsThunk,
+  getIngredients,
+  getIngredientsThunk,
+  getIsLoadingFeeds,
+  getOrders,
+  getOrdersThunk
+} from '../../features';
 
 export const Feed: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+  const orders: TOrder[] = useSelector(getOrders);
+  const isLoadingFeeds = useSelector(getIsLoadingFeeds);
+  const ingredients = useSelector(getIngredients);
 
-  if (!orders.length) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getOrdersThunk());
+    dispatch(getFeedsThunk());
+    dispatch(getIngredientsThunk());
+  }, []);
+
+  if (!orders.length || isLoadingFeeds || !ingredients.length) {
     return <Preloader />;
   }
 
-  <FeedUI orders={orders} handleGetFeeds={() => {}} />;
+  return (
+    <FeedUI
+      orders={orders}
+      handleGetFeeds={() => {
+        dispatch(getOrdersThunk());
+        dispatch(getFeedsThunk());
+      }}
+    />
+  );
 };

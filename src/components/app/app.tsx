@@ -24,16 +24,10 @@ import {
   ProtectedRoute
 } from '@components';
 
-import { useDispatch, useSelector } from '../../services/store';
-import {
-  checkUserAuth,
-  getIngredientsThunk,
-  getIsModalOpen,
-  toggleModal
-} from '../../features';
+import { useDispatch } from '../../services/store';
+import { checkUserAuth, getIngredientsThunk } from '../../features';
 
 const App = () => {
-  const isModalOpen = useSelector(getIsModalOpen);
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -53,7 +47,7 @@ const App = () => {
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
 
-        <Route path='/feed/:id' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
         <Route path='/' element={<ProtectedRoute onlyUnAuth />}>
@@ -72,7 +66,7 @@ const App = () => {
               <Modal
                 title=''
                 onClose={() => {
-                  dispatch(toggleModal());
+                  navigate('/profile/orders');
                 }}
               >
                 <OrderInfo />
@@ -87,15 +81,15 @@ const App = () => {
       {locationStateBackground && (
         <Routes>
           <Route
-            path='/feed/:id'
+            path='/feed/:number'
             element={
               <Modal
                 title=''
                 onClose={() => {
-                  dispatch(toggleModal());
+                  navigate('/feed');
                 }}
               >
-                <Feed />
+                <OrderInfo />
               </Modal>
             }
           />
@@ -105,7 +99,6 @@ const App = () => {
               <Modal
                 title='Детали ингредиента'
                 onClose={() => {
-                  dispatch(toggleModal());
                   navigate('/');
                 }}
               >
