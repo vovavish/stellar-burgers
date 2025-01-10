@@ -7,7 +7,7 @@ import {
   getIngredients,
   getIngredientsThunk,
   setIngredientById
-} from '../../features';
+} from '../../services/slices';
 
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
@@ -23,7 +23,6 @@ export const IngredientDetails: FC = () => {
     if (!ingredients.length) {
       dispatch(getIngredientsThunk());
     }
-    console.log(id);
     dispatch(setIngredientById(id));
   }, [id, ingredients]);
 

@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { TTabMode } from '@utils-types';
 
 import { useSelector } from '../../services/store';
-import { getIngredients } from '../../features';
+import { getIngredients } from '../../services/slices';
 
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
 

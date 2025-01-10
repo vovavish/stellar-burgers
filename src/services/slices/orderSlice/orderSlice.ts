@@ -2,7 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TOrder, TOrdersData } from '@utils-types';
 
-import { getFeedsApi, getOrdersApi, orderBurgerApi } from '@api';
+import {
+  getFeedsApi,
+  getOrderByNumberApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '@api';
 import { get } from 'http';
 
 export const orderBurgerApiThunk = createAsyncThunk(
@@ -18,12 +23,20 @@ export const getFeedsThunk = createAsyncThunk('feeds/get', async () =>
   getFeedsApi()
 );
 
+export const getOrderByNumberThunk = createAsyncThunk(
+  'order/getByNumber',
+  async (number: number) => getOrderByNumberApi(number)
+);
+
 export interface IOrderSlice {
   orderRequest: boolean;
   orderModalData: TOrder | null;
 
   isLoadingOrders: boolean;
   orders: TOrder[];
+
+  isLoadingOrderByNumber: boolean;
+  orderByNumber: TOrder | null;
 
   isLoadingFeeds: boolean;
   feeds: TOrdersData | null;
@@ -35,6 +48,9 @@ const initialState: IOrderSlice = {
 
   isLoadingOrders: false,
   orders: [],
+
+  isLoadingOrderByNumber: false,
+  orderByNumber: null,
 
   isLoadingFeeds: false,
   feeds: null
@@ -57,6 +73,9 @@ export const orderSlice = createSlice({
 
     getIsLoadingOrders: (state) => state.isLoadingOrders,
     getOrders: (state) => state.orders,
+
+    getIsLoadingOrderByNumber: (state) => state.isLoadingOrderByNumber,
+    getOrderByNumber: (state) => state.orderByNumber,
 
     getIsLoadingFeeds: (state) => state.isLoadingFeeds,
     getFeeds: (state) => state.feeds
@@ -94,6 +113,17 @@ export const orderSlice = createSlice({
       state.isLoadingFeeds = false;
       state.feeds = payload;
     });
+
+    builder.addCase(getOrderByNumberThunk.pending, (state) => {
+      state.isLoadingOrderByNumber = true;
+    });
+    builder.addCase(getOrderByNumberThunk.rejected, (state) => {
+      state.isLoadingOrderByNumber = false;
+    });
+    builder.addCase(getOrderByNumberThunk.fulfilled, (state, { payload }) => {
+      state.isLoadingOrderByNumber = false;
+      state.orderByNumber = payload.orders[0];
+    });
   }
 });
 
@@ -105,7 +135,9 @@ export const {
   getOrders,
   getIsLoadingOrders,
   getFeeds,
-  getIsLoadingFeeds
+  getIsLoadingFeeds,
+  getIsLoadingOrderByNumber,
+  getOrderByNumber
 } = orderSlice.selectors;
 
 export const order = orderSlice.reducer;

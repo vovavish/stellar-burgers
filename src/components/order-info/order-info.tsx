@@ -5,25 +5,23 @@ import { TIngredient } from '@utils-types';
 import {
   getIngredients,
   getIngredientsThunk,
-  getOrders,
-  getOrdersThunk
-} from '../../features';
+  getOrderByNumber,
+  getOrderByNumberThunk
+} from '../../services/slices';
 import { useDispatch, useSelector } from '../../services/store';
 import { useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
 
-  const orders = useSelector(getOrders);
-
-  const orderData = orders.find((item) => item.number == parseInt(number!));
+  const orderData = useSelector(getOrderByNumber);
 
   const ingredients: TIngredient[] = useSelector(getIngredients);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getOrdersThunk());
+    dispatch(getOrderByNumberThunk(parseInt(number! || '')));
     dispatch(getIngredientsThunk());
   }, []);
 

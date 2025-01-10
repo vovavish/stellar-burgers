@@ -4,24 +4,33 @@ import { TConstructorIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
 import {
   getConstructorItems,
+  getIsUserAuth,
   getOrderModalData,
   getOrderRequest,
   orderBurgerApiThunk,
   resetIngredients,
   setOrderModalData,
   setOrderRequest
-} from '../../features';
+} from '../../services/slices';
 
 import { BurgerConstructorUI } from '@ui';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector(getConstructorItems);
   const orderRequest = useSelector(getOrderRequest);
   const orderModalData = useSelector(getOrderModalData);
+  const isUserAuth = useSelector(getIsUserAuth);
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const onOrderClick = () => {
+    if (!isUserAuth) {
+      return navigate('/login');
+    }
+
     if (!constructorItems.bun || orderRequest) return;
 
     dispatch(
@@ -32,12 +41,15 @@ export const BurgerConstructor: FC = () => {
         ),
         constructorItems.bun._id
       ])
-    );
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(resetIngredients());
+      });
   };
   const closeOrderModal = () => {
     dispatch(setOrderModalData(null));
     dispatch(setOrderRequest(false));
-    dispatch(resetIngredients());
   };
 
   const price = useMemo(

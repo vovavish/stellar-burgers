@@ -6,12 +6,11 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-import { user, ingredients, currentModal, order } from '../features';
+import { user, ingredients, order } from './slices';
 
 const rootReducer = {
   user,
   ingredients,
-  currentModal,
   order
 };
 

@@ -25,7 +25,7 @@ import {
 } from '@components';
 
 import { useDispatch } from '../../services/store';
-import { checkUserAuth, getIngredientsThunk } from '../../features';
+import { checkUserAuth, getIngredientsThunk } from '../../services/slices';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -60,19 +60,7 @@ const App = () => {
         <Route path='/' element={<ProtectedRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
-          <Route
-            path='/profile/orders/:id'
-            element={
-              <Modal
-                title=''
-                onClose={() => {
-                  navigate('/profile/orders');
-                }}
-              >
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route path='/profile/orders/:number' element={<OrderInfo />} />
         </Route>
 
         <Route path='*' element={<NotFound404 />} />
@@ -84,7 +72,7 @@ const App = () => {
             path='/feed/:number'
             element={
               <Modal
-                title=''
+                title='Детали заказа'
                 onClose={() => {
                   navigate('/feed');
                 }}
@@ -106,6 +94,21 @@ const App = () => {
               </Modal>
             }
           />
+          <Route path='/' element={<ProtectedRoute />}>
+            <Route
+              path='/profile/orders/:number'
+              element={
+                <Modal
+                  title='Детали заказа'
+                  onClose={() => {
+                    navigate('/profile/orders');
+                  }}
+                >
+                  <OrderInfo />
+                </Modal>
+              }
+            />
+          </Route>
         </Routes>
       )}
     </div>

@@ -2,7 +2,12 @@ import type { FC } from 'react';
 
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 
-import { getUser, getIsAuthChecked } from '../../features';
+import {
+  getUser,
+  getIsAuthChecked,
+  getIsUserLogoutLoading,
+  getIsUserLoading
+} from '../../services/slices';
 
 import { useSelector } from '../../services/store';
 import { Preloader } from '@ui';
@@ -13,10 +18,12 @@ type ProtectedRouteProps = {
 
 export const ProtectedRoute: FC<ProtectedRouteProps> = ({ onlyUnAuth }) => {
   const isAuthChecked = useSelector(getIsAuthChecked);
+  const isUserLogoutLoading = useSelector(getIsUserLogoutLoading);
+  const isUserLoading = useSelector(getIsUserLoading);
   const user = useSelector(getUser);
   const location = useLocation();
 
-  if (!isAuthChecked) {
+  if (!isAuthChecked || isUserLogoutLoading || isUserLoading) {
     return <Preloader />;
   }
 

@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './burger-ingredient.module.css';
 
@@ -9,18 +9,10 @@ import {
 } from '@zlden/react-developer-burger-ui-components';
 
 import { TBurgerIngredientUIProps } from './type';
-import { useDispatch } from '../../../services/store';
-import { toggleModal } from '../../../features';
 
 export const BurgerIngredientUI: FC<TBurgerIngredientUIProps> = memo(
   ({ ingredient, count, handleAdd, locationState }) => {
-    const dispatch = useDispatch();
-
     const { image, price, name, _id } = ingredient;
-
-    const onIngredientClick = () => {
-      dispatch(toggleModal());
-    };
 
     return (
       <li className={styles.container}>
@@ -28,7 +20,6 @@ export const BurgerIngredientUI: FC<TBurgerIngredientUIProps> = memo(
           className={styles.article}
           to={`/ingredients/${_id}`}
           state={locationState}
-          onClick={onIngredientClick}
         >
           {count && <Counter count={count} />}
           <img className={styles.img} src={image} alt='картинка ингредиента.' />

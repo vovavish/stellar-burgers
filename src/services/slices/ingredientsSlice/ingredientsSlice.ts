@@ -67,6 +67,52 @@ export const ingredientsSlice = createSlice({
         bun: null,
         ingredients: []
       };
+    },
+    removeIngridientInOrder: (
+      state,
+      { payload }: { payload: TConstructorIngredient }
+    ) => {
+      state.constructorItems.ingredients =
+        state.constructorItems.ingredients.filter(
+          (item) => item.id !== payload.id
+        );
+    },
+    moveIngridientInDirection: (
+      state,
+      {
+        payload
+      }: {
+        payload: {
+          ingredient: TConstructorIngredient;
+          direction: 'up' | 'down';
+        };
+      }
+    ) => {
+      const ingredientIndex = state.constructorItems.ingredients.findIndex(
+        (item) => item.id === payload.ingredient.id
+      );
+
+      const newConstructorItems = [...state.constructorItems.ingredients];
+
+      let directionNumber = 0;
+
+      if (payload.direction === 'up') {
+        if (ingredientIndex <= 0) return;
+        directionNumber = -1;
+      } else {
+        if (ingredientIndex >= newConstructorItems.length - 1) return;
+        directionNumber = 1;
+      }
+
+      [
+        newConstructorItems[ingredientIndex],
+        newConstructorItems[ingredientIndex + directionNumber]
+      ] = [
+        newConstructorItems[ingredientIndex + directionNumber],
+        newConstructorItems[ingredientIndex]
+      ];
+
+      state.constructorItems.ingredients = newConstructorItems;
     }
   },
   selectors: {
@@ -89,8 +135,13 @@ export const ingredientsSlice = createSlice({
   }
 });
 
-export const { setIngredientById, addIngridientInOrder, resetIngredients } =
-  ingredientsSlice.actions;
+export const {
+  setIngredientById,
+  addIngridientInOrder,
+  resetIngredients,
+  removeIngridientInOrder,
+  moveIngridientInDirection
+} = ingredientsSlice.actions;
 
 export const {
   getIsIngredientsLoading,

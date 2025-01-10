@@ -1,31 +1,38 @@
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
+import { TOrder, TOrdersData } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import {
+  getFeeds,
   getFeedsThunk,
   getIngredients,
   getIngredientsThunk,
   getIsLoadingFeeds,
-  getOrders,
   getOrdersThunk
-} from '../../features';
+} from '../../services/slices';
 
 export const Feed: FC = () => {
-  const orders: TOrder[] = useSelector(getOrders);
+  const feeds: TOrdersData = useSelector(getFeeds) || {
+    orders: [],
+    total: 0,
+    totalToday: 0
+  };
+
   const isLoadingFeeds = useSelector(getIsLoadingFeeds);
+
+  const orders: TOrder[] = feeds.orders;
+
   const ingredients = useSelector(getIngredients);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getOrdersThunk());
     dispatch(getFeedsThunk());
     dispatch(getIngredientsThunk());
   }, []);
 
-  if (!orders.length || isLoadingFeeds || !ingredients.length) {
+  if (isLoadingFeeds || !ingredients.length) {
     return <Preloader />;
   }
 
@@ -33,8 +40,8 @@ export const Feed: FC = () => {
     <FeedUI
       orders={orders}
       handleGetFeeds={() => {
-        dispatch(getOrdersThunk());
         dispatch(getFeedsThunk());
+        dispatch(getIngredientsThunk());
       }}
     />
   );
