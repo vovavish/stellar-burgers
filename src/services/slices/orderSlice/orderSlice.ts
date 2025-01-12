@@ -8,24 +8,19 @@ import {
   getOrdersApi,
   orderBurgerApi
 } from '@api';
-import { get } from 'http';
 
 export const orderBurgerApiThunk = createAsyncThunk(
   'order/send',
-  async (data: string[]) => orderBurgerApi(data)
+  orderBurgerApi
 );
 
-export const getOrdersThunk = createAsyncThunk('orders/get', async () =>
-  getOrdersApi()
-);
+export const getOrdersThunk = createAsyncThunk('orders/get', getOrdersApi);
 
-export const getFeedsThunk = createAsyncThunk('feeds/get', async () =>
-  getFeedsApi()
-);
+export const getFeedsThunk = createAsyncThunk('feeds/get', getFeedsApi);
 
 export const getOrderByNumberThunk = createAsyncThunk(
   'order/getByNumber',
-  async (number: number) => getOrderByNumberApi(number)
+  getOrderByNumberApi
 );
 
 export interface IOrderSlice {

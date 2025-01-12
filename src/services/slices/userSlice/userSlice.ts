@@ -7,32 +7,20 @@ import {
   loginUserApi,
   logoutApi,
   registerUserApi,
-  TLoginData,
-  TRegisterData,
   updateUserApi
 } from '@api';
 import { getCookie, setCookie, deleteCookie } from '../../../utils/cookie';
-import { get } from 'http';
 
-export const loginUserThunk = createAsyncThunk(
-  'user/login',
-  async ({ email, password }: TLoginData) => loginUserApi({ email, password })
-);
+export const loginUserThunk = createAsyncThunk('user/login', loginUserApi);
 
 export const registerUserThunk = createAsyncThunk(
   'user/register',
-  async ({ email, name, password }: TRegisterData) =>
-    registerUserApi({ email, name, password })
+  registerUserApi
 );
 
-export const logoutUserThunk = createAsyncThunk('user/logout', async () =>
-  logoutApi()
-);
+export const logoutUserThunk = createAsyncThunk('user/logout', logoutApi);
 
-export const updateUserThunk = createAsyncThunk(
-  'user/update',
-  async (user: Partial<TRegisterData>) => updateUserApi(user)
-);
+export const updateUserThunk = createAsyncThunk('user/update', updateUserApi);
 
 export interface IUserSlice {
   isUserLoading: boolean;

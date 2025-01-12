@@ -2,13 +2,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import uniqid from 'uniqid';
 
-import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 
 import { getIngredientsApi } from '@api';
 
 export const getIngredientsThunk = createAsyncThunk(
   'get/ingredients',
-  async () => getIngredientsApi()
+  getIngredientsApi
 );
 
 export interface IConstructorItems {
@@ -50,17 +50,22 @@ export const ingredientsSlice = createSlice({
       state.selectedIngredient =
         state.ingredients.find((item) => item._id === payload) || null;
     },
-    addIngridientInOrder: (state, { payload }: { payload: TIngredient }) => {
-      if (payload.type === 'bun') {
-        state.constructorItems.bun = {
-          ...payload
-        };
-      } else {
-        state.constructorItems.ingredients = [
-          ...state.constructorItems.ingredients,
-          { ...payload, id: uniqid('id_') }
-        ];
-      }
+    addIngridientInOrder: {
+      reducer: (state, { payload }: { payload: TConstructorIngredient }) => {
+        if (payload.type === 'bun') {
+          state.constructorItems.bun = {
+            ...payload
+          };
+        } else {
+          state.constructorItems.ingredients = [
+            ...state.constructorItems.ingredients,
+            payload
+          ];
+        }
+      },
+      prepare: (ingredient: TIngredient) => ({
+        payload: { ...ingredient, id: uniqid('id_') }
+      })
     },
     resetIngredients: (state) => {
       state.constructorItems = {

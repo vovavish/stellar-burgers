@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import clsx from 'clsx';
 
@@ -36,9 +36,9 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
           <p className='text text_type_main-default ml-2'>Лента заказов</p>
         </NavLink>
       </div>
-      <div className={styles.logo}>
+      <Link to={'/'} className={styles.logo}>
         <Logo className='' />
-      </div>
+      </Link>
       <NavLink
         to={'/profile'}
         className={({ isActive }) =>

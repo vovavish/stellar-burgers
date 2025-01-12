@@ -8,8 +8,7 @@ import {
   getFeedsThunk,
   getIngredients,
   getIngredientsThunk,
-  getIsLoadingFeeds,
-  getOrdersThunk
+  getIsLoadingFeeds
 } from '../../services/slices';
 
 export const Feed: FC = () => {
@@ -32,7 +31,7 @@ export const Feed: FC = () => {
     dispatch(getIngredientsThunk());
   }, []);
 
-  if (isLoadingFeeds || !ingredients.length) {
+  if (!feeds.orders.length || isLoadingFeeds || !ingredients.length) {
     return <Preloader />;
   }
 
