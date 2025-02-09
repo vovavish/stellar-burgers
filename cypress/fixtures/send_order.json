@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "name": "Краторный spicy био-марсианский бургер",
+  "order": {
+    "ingredients": [
+      {
+        "_id": "643d69a5c3f7b9001cfa093c",
+        "name": "Краторная булка N-200i",
+        "type": "bun",
+        "proteins": 80,
+        "fat": 24,
+        "carbohydrates": 53,
+        "calories": 420,
+        "price": 1255,
+        "image": "https://code.s3.yandex.net/react/code/bun-02.png",
+        "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+        "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png",
+        "__v": 0
+      },
+      {
+        "_id": "643d69a5c3f7b9001cfa0941",
+        "name": "Биокотлета из марсианской Магнолии",
+        "type": "main",
+        "proteins": 420,
+        "fat": 142,
+        "carbohydrates": 242,
+        "calories": 4242,
+        "price": 424,
+        "image": "https://code.s3.yandex.net/react/code/meat-01.png",
+        "image_mobile": "https://code.s3.yandex.net/react/code/meat-01-mobile.png",
+        "image_large": "https://code.s3.yandex.net/react/code/meat-01-large.png",
+        "__v": 0
+      },
+      {
+        "_id": "643d69a5c3f7b9001cfa0942",
+        "name": "Соус Spicy-X",
+        "type": "sauce",
+        "proteins": 30,
+        "fat": 20,
+        "carbohydrates": 40,
+        "calories": 30,
+        "price": 90,
+        "image": "https://code.s3.yandex.net/react/code/sauce-02.png",
+        "image_mobile": "https://code.s3.yandex.net/react/code/sauce-02-mobile.png",
+        "image_large": "https://code.s3.yandex.net/react/code/sauce-02-large.png",
+        "__v": 0
+      },
+      {
+        "_id": "643d69a5c3f7b9001cfa093c",
+        "name": "Краторная булка N-200i",
+        "type": "bun",
+        "proteins": 80,
+        "fat": 24,
+        "carbohydrates": 53,
+        "calories": 420,
+        "price": 1255,
+        "image": "https://code.s3.yandex.net/react/code/bun-02.png",
+        "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+        "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png",
+        "__v": 0
+      }
+    ],
+    "_id": "67a6d118133acd001be4f49b",
+    "owner": {
+      "name": "test_name",
+      "email": "email@test.ru",
+      "createdAt": "2025-01-09T21:41:22.719Z",
+      "updatedAt": "2025-02-07T20:33:57.732Z"
+    },
+    "status": "done",
+    "name": "Краторный spicy био-марсианский бургер",
+    "createdAt": "2025-02-08T03:35:52.316Z",
+    "updatedAt": "2025-02-08T03:35:52.948Z",
+    "number": 67895,
+    "price": 3024
+  }
+}

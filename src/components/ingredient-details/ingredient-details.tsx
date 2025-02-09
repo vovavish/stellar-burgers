@@ -23,7 +23,7 @@ export const IngredientDetails: FC = () => {
     if (!ingredients.length) {
       dispatch(getIngredientsThunk());
     }
-    dispatch(setIngredientById(id));
+    dispatch(setIngredientById(id!));
   }, [id, ingredients]);
 
   if (!ingredientData) {
