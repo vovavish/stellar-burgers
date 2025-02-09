@@ -9,6 +9,7 @@ import {
   registerUserApi,
   updateUserApi
 } from '@api';
+
 import { getCookie, setCookie, deleteCookie } from '../../../utils/cookie';
 
 export const loginUserThunk = createAsyncThunk('user/login', loginUserApi);
@@ -31,7 +32,7 @@ export interface IUserSlice {
   isUserUpdaing: boolean;
 }
 
-const initialState: IUserSlice = {
+export const userSliceInitialState: IUserSlice = {
   isUserLoading: false,
   isUserLogoutLoading: false,
   isAuthChecked: false,
@@ -42,7 +43,7 @@ const initialState: IUserSlice = {
 
 export const userSlice = createSlice({
   name: 'user',
-  initialState,
+  initialState: userSliceInitialState,
   reducers: {
     authChecked: (state) => {
       state.isAuthChecked = true;

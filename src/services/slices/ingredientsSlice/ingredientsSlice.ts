@@ -17,6 +17,7 @@ export interface IConstructorItems {
     price: number;
     name: string;
     image: string;
+    id: string;
   } | null;
   ingredients: TConstructorIngredient[];
 }
@@ -28,7 +29,7 @@ export interface IIngredientsSlice {
   constructorItems: IConstructorItems;
 }
 
-const initialState: IIngredientsSlice = {
+export const ingredientsSliceInitialState: IIngredientsSlice = {
   isIngredientsLoading: false,
   ingredients: [],
   selectedIngredient: null,
@@ -40,9 +41,9 @@ const initialState: IIngredientsSlice = {
 
 export const ingredientsSlice = createSlice({
   name: 'ingredients',
-  initialState,
+  initialState: ingredientsSliceInitialState,
   reducers: {
-    setIngredientById: (state, { payload }) => {
+    setIngredientById: (state, { payload }: { payload: string }) => {
       if (!state.ingredients.length) {
         return;
       }

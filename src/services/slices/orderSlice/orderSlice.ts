@@ -37,7 +37,7 @@ export interface IOrderSlice {
   feeds: TOrdersData | null;
 }
 
-const initialState: IOrderSlice = {
+export const orderSliceInitialState: IOrderSlice = {
   orderRequest: false,
   orderModalData: null,
 
@@ -53,7 +53,7 @@ const initialState: IOrderSlice = {
 
 export const orderSlice = createSlice({
   name: 'order',
-  initialState,
+  initialState: orderSliceInitialState,
   reducers: {
     setOrderRequest: (state, { payload }: { payload: boolean }) => {
       state.orderRequest = payload;
