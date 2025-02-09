@@ -25,6 +25,8 @@ import { setCookie, deleteCookie, getCookie } from '../../../utils/cookie';
 import { configureStore } from '@reduxjs/toolkit';
 import { getUserApi } from '@api';
 
+const mockUser = { name: 'test_name', email: 'email@test.ru' };
+
 describe('[userSlice] reducers', () => {
   it('Редьюсер authChecked', () => {
     const nextState = user(userSliceInitialState, authChecked());
@@ -33,8 +35,6 @@ describe('[userSlice] reducers', () => {
   });
 
   it('Редьюсер setUserData', () => {
-    const mockUser = { name: 'test_name', email: 'email@test.ru' };
-
     const nextState = user(userSliceInitialState, setUserData(mockUser));
 
     expect(nextState.user).toEqual(mockUser);
@@ -48,6 +48,27 @@ describe('[userSlice] reducers', () => {
 });
 
 describe('[userSlice] async thunk actions', () => {
+  const userCredentials = {
+    email: '',
+    password: ''
+  };
+
+  const userCredentialsWithName = {
+    ...userCredentials,
+    name: ''
+  };
+
+  const mockUserAuthPayload = {
+    success: true,
+    user: mockUser
+  };
+
+  const mockUserAuthWithAtRtPayload = {
+    ...mockUserAuthPayload,
+    accessToken: 'mockToken',
+    refreshToken: 'mockRefreshToken'
+  };
+
   beforeEach(() => {
     Storage.prototype.setItem = jest.fn();
     Storage.prototype.removeItem = jest.fn();
@@ -58,7 +79,7 @@ describe('[userSlice] async thunk actions', () => {
     it('loginUserThunk.pending', () => {
       const nextState = user(
         userSliceInitialState,
-        loginUserThunk.pending('requestId', { email: '', password: '' })
+        loginUserThunk.pending('requestId', userCredentials)
       );
 
       expect(nextState.isUserLoading).toBe(true);
@@ -67,10 +88,11 @@ describe('[userSlice] async thunk actions', () => {
     it('loginUserThunk.rejected', () => {
       const nextState = user(
         userSliceInitialState,
-        loginUserThunk.rejected(new Error('Error'), 'requestId', {
-          email: '',
-          password: ''
-        })
+        loginUserThunk.rejected(
+          new Error('Error'),
+          'requestId',
+          userCredentials
+        )
       );
 
       expect(nextState.isUserLoading).toBe(false);
@@ -78,32 +100,26 @@ describe('[userSlice] async thunk actions', () => {
     });
 
     it('loginUserThunk.fulfilled', () => {
-      const mockPayload = {
-        success: true,
-        user: { name: 'test_name', email: 'email@test.ru' },
-        accessToken: 'mockToken',
-        refreshToken: 'mockRefreshToken'
-      };
-
       const nextState = user(
         userSliceInitialState,
-        loginUserThunk.fulfilled(mockPayload, 'requestId', {
-          email: '',
-          password: ''
-        })
+        loginUserThunk.fulfilled(
+          mockUserAuthWithAtRtPayload,
+          'requestId',
+          userCredentials
+        )
       );
 
       expect(nextState.isUserLoading).toBe(false);
-      expect(nextState.user).toEqual(mockPayload.user);
+      expect(nextState.user).toEqual(mockUserAuthWithAtRtPayload.user);
       expect(nextState.isUserAuth).toBe(true);
 
       expect(setCookie).toHaveBeenCalledWith(
         'accessToken',
-        mockPayload.accessToken
+        mockUserAuthWithAtRtPayload.accessToken
       );
       expect(localStorage.setItem).toHaveBeenCalledWith(
         'refreshToken',
-        mockPayload.refreshToken
+        mockUserAuthWithAtRtPayload.refreshToken
       );
     });
   });
@@ -112,11 +128,7 @@ describe('[userSlice] async thunk actions', () => {
     it('registerUserThunk.pending', () => {
       const nextState = user(
         userSliceInitialState,
-        registerUserThunk.pending('requestId', {
-          name: '',
-          email: '',
-          password: ''
-        })
+        registerUserThunk.pending('requestId', userCredentialsWithName)
       );
 
       expect(nextState.isUserLoading).toBe(true);
@@ -125,43 +137,36 @@ describe('[userSlice] async thunk actions', () => {
     it('registerUserThunk.rejected', () => {
       const nextState = user(
         userSliceInitialState,
-        registerUserThunk.rejected(new Error('Error'), 'requestId', {
-          name: '',
-          email: '',
-          password: ''
-        })
+        registerUserThunk.rejected(
+          new Error('Error'),
+          'requestId',
+          userCredentialsWithName
+        )
       );
 
       expect(nextState.isUserLoading).toBe(false);
     });
 
     it('registerUserThunk.fulfilled', () => {
-      const mockPayload = {
-        success: true,
-        user: { name: 'Jane Doe', email: 'jane@example.com' },
-        accessToken: 'mockToken',
-        refreshToken: 'mockRefreshToken'
-      };
-
       const nextState = user(
         userSliceInitialState,
-        registerUserThunk.fulfilled(mockPayload, 'requestId', {
-          name: '',
-          email: '',
-          password: ''
-        })
+        registerUserThunk.fulfilled(
+          mockUserAuthWithAtRtPayload,
+          'requestId',
+          userCredentialsWithName
+        )
       );
 
       expect(nextState.isUserLoading).toBe(false);
-      expect(nextState.user).toEqual(mockPayload.user);
+      expect(nextState.user).toEqual(mockUserAuthWithAtRtPayload.user);
 
       expect(setCookie).toHaveBeenCalledWith(
         'accessToken',
-        mockPayload.accessToken
+        mockUserAuthWithAtRtPayload.accessToken
       );
       expect(localStorage.setItem).toHaveBeenCalledWith(
         'refreshToken',
-        mockPayload.refreshToken
+        mockUserAuthWithAtRtPayload.refreshToken
       );
     });
   });
@@ -204,10 +209,7 @@ describe('[userSlice] async thunk actions', () => {
     it('updateUserThunk.pending', () => {
       const nextState = user(
         userSliceInitialState,
-        updateUserThunk.pending('requestId', {
-          name: '',
-          email: ''
-        })
+        updateUserThunk.pending('requestId', mockUser)
       );
 
       expect(nextState.isUserUpdaing).toBe(true);
@@ -216,51 +218,38 @@ describe('[userSlice] async thunk actions', () => {
     it('updateUserThunk.rejected', () => {
       const nextState = user(
         userSliceInitialState,
-        updateUserThunk.rejected(new Error('Error'), 'requestId', {
-          name: '',
-          email: ''
-        })
+        updateUserThunk.rejected(new Error('Error'), 'requestId', mockUser)
       );
 
       expect(nextState.isUserUpdaing).toBe(false);
     });
 
     it('updateUserThunk.fulfilled', () => {
-      const mockPayload = {
-        success: true,
-        user: {
-          name: 'John Updated',
-          email: 'john.updated@example.com'
-        }
-      };
       const nextState = user(
         userSliceInitialState,
-        updateUserThunk.fulfilled(mockPayload, 'requestId', {
-          name: 'John Updated',
-          email: 'john.updated@example.com'
-        })
+        updateUserThunk.fulfilled(mockUserAuthPayload, 'requestId', mockUser)
       );
 
       expect(nextState.isUserUpdaing).toBe(false);
-      expect(nextState.user).toEqual(mockPayload.user);
+      expect(nextState.user).toEqual(mockUserAuthPayload.user);
     });
   });
 
   describe('checkUserAuth', () => {
+    let store = configureStore({
+      reducer: { user }
+    });
+
     afterEach(() => {
       jest.clearAllMocks();
+      store = configureStore({
+        reducer: { user }
+      });
     });
 
     it('Успешное обращение к getUserApi', async () => {
       (getCookie as jest.Mock).mockReturnValue('mockToken');
-      (getUserApi as jest.Mock).mockResolvedValue({
-        success: true,
-        user: { name: 'test_name', email: 'email@test.ru' }
-      });
-
-      const store = configureStore({
-        reducer: { user }
-      });
+      (getUserApi as jest.Mock).mockResolvedValue(mockUserAuthPayload);
 
       await store.dispatch(checkUserAuth());
 
@@ -268,20 +257,13 @@ describe('[userSlice] async thunk actions', () => {
 
       expect(getUserApi).toHaveBeenCalled();
       expect(state.user.isAuthChecked).toBe(true);
-      expect(state.user.user).toEqual({
-        name: 'test_name',
-        email: 'email@test.ru'
-      });
+      expect(state.user.user).toEqual(mockUser);
       expect(state.user.isUserAuth).toBe(true);
     });
 
     it('Ошибка при обращении к getUserApi', async () => {
       (getCookie as jest.Mock).mockReturnValue('mockToken');
       (getUserApi as jest.Mock).mockResolvedValue(Promise.reject(new Error()));
-
-      const store = configureStore({
-        reducer: { user }
-      });
 
       await store.dispatch(checkUserAuth());
 
@@ -295,10 +277,6 @@ describe('[userSlice] async thunk actions', () => {
 
     it('Отсутствует accessToken', async () => {
       (getCookie as jest.Mock).mockReturnValue(null);
-
-      const store = configureStore({
-        reducer: { user }
-      });
 
       await store.dispatch(checkUserAuth());
 

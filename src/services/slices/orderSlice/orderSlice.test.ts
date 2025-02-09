@@ -33,21 +33,17 @@ const mockOrder2: TOrder = {
 };
 
 describe('[orderSlice] reducers', () => {
-  it('Редьюсер setOrderRequest', () => {
-    const state = {
-      ...orderSliceInitialState
-    };
+  const state = {
+    ...orderSliceInitialState
+  };
 
+  it('Редьюсер setOrderRequest', () => {
     const newState = order(state, setOrderRequest(true));
 
     expect(newState.orderRequest).toEqual(true);
   });
 
   it('Редьюсер setOrderModalData', () => {
-    const state = {
-      ...orderSliceInitialState
-    };
-
     const newState = order(state, setOrderModalData(mockOrder1));
 
     expect(newState.orderModalData).toEqual(mockOrder1);
@@ -55,14 +51,13 @@ describe('[orderSlice] reducers', () => {
 });
 
 describe('[orderSlice] async thunk actions', () => {
+  const mockOrderIds = [mockIngredients[0]._id, mockIngredients[1]._id];
+
   describe('orderBurgerApiThunk', () => {
     it('orderBurgerApiThunk.pending', () => {
       const nextState = order(
         orderSliceInitialState,
-        orderBurgerApiThunk.pending('requestId', [
-          mockIngredients[0]._id,
-          mockIngredients[1]._id
-        ])
+        orderBurgerApiThunk.pending('requestId', mockOrderIds)
       );
 
       expect(nextState.orderRequest).toBe(true);
@@ -71,10 +66,11 @@ describe('[orderSlice] async thunk actions', () => {
     it('orderBurgerApiThunk.rejected', () => {
       const nextState = order(
         orderSliceInitialState,
-        orderBurgerApiThunk.rejected(new Error('Error'), 'requestId', [
-          mockIngredients[0]._id,
-          mockIngredients[1]._id
-        ])
+        orderBurgerApiThunk.rejected(
+          new Error('Error'),
+          'requestId',
+          mockOrderIds
+        )
       );
 
       expect(nextState.orderRequest).toBe(false);
@@ -86,12 +82,14 @@ describe('[orderSlice] async thunk actions', () => {
         order: mockOrder1,
         name: 'test'
       };
+
       const nextState = order(
         orderSliceInitialState,
-        orderBurgerApiThunk.fulfilled(mockOrder1Fulfilled, 'requestId', [
-          mockIngredients[0]._id,
-          mockIngredients[1]._id
-        ])
+        orderBurgerApiThunk.fulfilled(
+          mockOrder1Fulfilled,
+          'requestId',
+          mockOrderIds
+        )
       );
 
       expect(nextState.orderRequest).toBe(false);
@@ -196,8 +194,6 @@ describe('[orderSlice] async thunk actions', () => {
         orderSliceInitialState,
         getOrderByNumberThunk.fulfilled(mockOrder1Fulfilled, 'requestId', 1)
       );
-
-      console.log(nextState.orderByNumber);
 
       expect(nextState.isLoadingOrderByNumber).toBe(false);
       expect(nextState.orderByNumber).toEqual(mockOrder2);

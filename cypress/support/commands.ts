@@ -35,3 +35,19 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('addIngredient', (ingredientType, index) => {
+  cy.get(`[data-cy-ingredient="${ingredientType}"]`).find('button').eq(index).click();
+});
+
+Cypress.Commands.add('checkConstructorItem', (type, text) => {
+  cy.get(`[data-cy-constructor="${type}"]`)
+    .find('.constructor-element__text')
+    .should('have.text', text);
+});
+
+Cypress.Commands.add('closeModalByButton', () => {
+  cy.get('[id="modals"]').as('modalWindow');
+  cy.get('@modalWindow').find('[data-cy-modal="modal-close"]').click();
+  cy.get('@modalWindow').should('not.be.visible');
+});

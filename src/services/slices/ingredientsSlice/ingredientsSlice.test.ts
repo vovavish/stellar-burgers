@@ -13,14 +13,31 @@ import {
 import { mockIngredients } from './ingredientsMock';
 
 describe('[ingredientsSlice] reducers', () => {
+  const stateWithIngredients = {
+    ...ingredientsSliceInitialState,
+    ingredients: mockIngredients
+  };
+
+  const mockIngredientsWithId = [
+    { id: 'id_1', ...mockIngredients[1] },
+    { id: 'id_2', ...mockIngredients[2] },
+    { id: 'id_3', ...mockIngredients[3] }
+  ];
+
+  const stateWithIngredientsAndConstructor = {
+    ...stateWithIngredients,
+    constructorItems: {
+      ingredients: mockIngredientsWithId,
+      bun: { id: 'test_id_0', ...mockIngredients[0] }
+    }
+  };
+
   describe('Редьюсер setIngredientById', () => {
     it('Выбор ингредиента, когда ингредиенты есть', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
-      const newState = ingredients(state, setIngredientById('test_id_1'));
+      const newState = ingredients(
+        stateWithIngredients,
+        setIngredientById('test_id_1')
+      );
 
       expect(newState.selectedIngredient).toEqual(mockIngredients[0]);
     });
@@ -38,12 +55,10 @@ describe('[ingredientsSlice] reducers', () => {
     });
 
     it('Выбор ингредиента, которого нет', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
-      const newState = ingredients(state, setIngredientById('test_id_unknown'));
+      const newState = ingredients(
+        stateWithIngredients,
+        setIngredientById('test_id_unknown')
+      );
 
       expect(newState.selectedIngredient).toEqual(null);
     });
@@ -51,13 +66,8 @@ describe('[ingredientsSlice] reducers', () => {
 
   describe('Редьюсер addIngridientInOrder', () => {
     it('Добавление ингредиента с типом bun', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
       const newState = ingredients(
-        state,
+        stateWithIngredients,
         addIngridientInOrder(mockIngredients[0])
       );
 
@@ -72,13 +82,8 @@ describe('[ingredientsSlice] reducers', () => {
     });
 
     it('Добавление ингредиента с типом main', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
       const newState = ingredients(
-        state,
+        stateWithIngredients,
         addIngridientInOrder(mockIngredients[1])
       );
 
@@ -94,13 +99,8 @@ describe('[ingredientsSlice] reducers', () => {
     });
 
     it('Добавление ингредиента с типом sauce', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
       const newState = ingredients(
-        state,
+        stateWithIngredients,
         addIngridientInOrder(mockIngredients[2])
       );
 
@@ -116,13 +116,8 @@ describe('[ingredientsSlice] reducers', () => {
     });
 
     it('Добавление четырех ингредиентов с типами bun, bun, main, sauce', () => {
-      const state = {
-        ...ingredientsSliceInitialState,
-        ingredients: mockIngredients
-      };
-
       let newState = ingredients(
-        state,
+        stateWithIngredients,
         addIngridientInOrder(mockIngredients[0])
       );
       newState = ingredients(
@@ -155,19 +150,10 @@ describe('[ingredientsSlice] reducers', () => {
   });
 
   it('Редьюсер resetIngredients', () => {
-    const state = {
-      ...ingredientsSliceInitialState,
-      ingredients: mockIngredients,
-      constructorItems: {
-        ingredients: [
-          { id: 'id_1', ...mockIngredients[1] },
-          { id: 'id_2', ...mockIngredients[2] }
-        ],
-        bun: { id: 'test_id_0', ...mockIngredients[0] }
-      }
-    };
-
-    const resetedIngredientsState = ingredients(state, resetIngredients());
+    const resetedIngredientsState = ingredients(
+      stateWithIngredientsAndConstructor,
+      resetIngredients()
+    );
 
     expect(resetedIngredientsState.constructorItems).toEqual(
       ingredientsSliceInitialState.constructorItems
@@ -175,103 +161,75 @@ describe('[ingredientsSlice] reducers', () => {
   });
 
   it('Редьюсер removeIngridientInOrder', () => {
-    const state = {
-      ...ingredientsSliceInitialState,
-      ingredients: mockIngredients,
-      constructorItems: {
-        ingredients: [
-          { id: 'id_1', ...mockIngredients[1] },
-          { id: 'id_2', ...mockIngredients[2] }
-        ],
-        bun: { id: 'test_id_0', ...mockIngredients[0] }
-      }
-    };
-
     const newState = ingredients(
-      state,
-      removeIngridientInOrder({ id: 'id_1', ...mockIngredients[1] })
+      stateWithIngredientsAndConstructor,
+      removeIngridientInOrder(mockIngredientsWithId[0])
     );
 
     expect(newState.constructorItems.ingredients).toEqual([
-      { id: 'id_2', ...mockIngredients[2] }
+      mockIngredientsWithId[1],
+      mockIngredientsWithId[2]
     ]);
   });
 
   describe('Редьюсер moveIngridientInDirection', () => {
-    const state = {
-      ...ingredientsSliceInitialState,
-      ingredients: mockIngredients,
-      constructorItems: {
-        ingredients: [
-          { id: 'id_1', ...mockIngredients[1] },
-          { id: 'id_2', ...mockIngredients[2] },
-          { id: 'id_3', ...mockIngredients[2] }
-        ],
-        bun: { id: 'test_id_0', ...mockIngredients[0] }
-      }
-    };
-
     it('Двигаем самый верхний ингредиент вверх', () => {
       const newState = ingredients(
-        state,
+        stateWithIngredientsAndConstructor,
         moveIngridientInDirection({
-          ingredient: { id: 'id_1', ...mockIngredients[1] },
+          ingredient: mockIngredientsWithId[0],
           direction: 'up'
         })
       );
 
-      expect(newState.constructorItems.ingredients).toEqual([
-        { id: 'id_1', ...mockIngredients[1] },
-        { id: 'id_2', ...mockIngredients[2] },
-        { id: 'id_3', ...mockIngredients[2] }
-      ]);
+      expect(newState.constructorItems.ingredients).toEqual(
+        mockIngredientsWithId
+      );
     });
 
     it('Двигаем НЕ верхний ингредиент вверх', () => {
       const newState = ingredients(
-        state,
+        stateWithIngredientsAndConstructor,
         moveIngridientInDirection({
-          ingredient: { id: 'id_3', ...mockIngredients[2] },
+          ingredient: mockIngredientsWithId[2],
           direction: 'up'
         })
       );
 
       expect(newState.constructorItems.ingredients).toEqual([
-        { id: 'id_1', ...mockIngredients[1] },
-        { id: 'id_3', ...mockIngredients[2] },
-        { id: 'id_2', ...mockIngredients[2] }
+        mockIngredientsWithId[0],
+        mockIngredientsWithId[2],
+        mockIngredientsWithId[1],
       ]);
     });
 
     it('Двигаем самый нижний ингредиент вниз', () => {
       const newState = ingredients(
-        state,
+        stateWithIngredientsAndConstructor,
         moveIngridientInDirection({
-          ingredient: { id: 'id_3', ...mockIngredients[1] },
+          ingredient: mockIngredientsWithId[2],
           direction: 'down'
         })
       );
 
-      expect(newState.constructorItems.ingredients).toEqual([
-        { id: 'id_1', ...mockIngredients[1] },
-        { id: 'id_2', ...mockIngredients[2] },
-        { id: 'id_3', ...mockIngredients[2] }
-      ]);
+      expect(newState.constructorItems.ingredients).toEqual(
+        mockIngredientsWithId
+      );
     });
 
     it('Двигаем НЕ самый нижний ингредиент вниз', () => {
       const newState = ingredients(
-        state,
+        stateWithIngredientsAndConstructor,
         moveIngridientInDirection({
-          ingredient: { id: 'id_1', ...mockIngredients[1] },
+          ingredient: mockIngredientsWithId[0],
           direction: 'down'
         })
       );
 
       expect(newState.constructorItems.ingredients).toEqual([
-        { id: 'id_2', ...mockIngredients[2] },
-        { id: 'id_1', ...mockIngredients[1] },
-        { id: 'id_3', ...mockIngredients[2] }
+        mockIngredientsWithId[1],
+        mockIngredientsWithId[0],
+        mockIngredientsWithId[2],
       ]);
     });
   });
